@@ -17,6 +17,9 @@ DeclareOperation("NrLettersIdentity",
                  [IsHomogeneousList]);
 DeclareOperation("ReverseIdentity",
                  [IsHomogeneousList]);
+DeclareOperation("VerifyQuasiIdentity",
+                 [IsMultiplicativeElementCollection, IsHomogeneousList,
+                  IsHomogeneousList]);
 DeclareOperation("RandomTable",
                  [IsPosInt]);
 DeclareOperation("RandomTuple",

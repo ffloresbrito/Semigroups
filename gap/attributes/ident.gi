@@ -83,6 +83,52 @@ function(n)
   return List([1 .. n], x -> List([1 .. n], y -> Random([1 .. n])));
 end);
 
+InstallMethod(VerifyQuasiIdentity, "for a mult. element coll., a homogeneous list, and a homogeneous list",
+              [IsMultiplicativeElementCollection, IsHomogeneousList,
+               IsHomogeneousList],
+function(S, lhs, rhs)
+  local nr, valid, tup, id;
+
+  if IsEmpty(lhs) or IsEmpty(rhs) then
+    ErrorNoReturn("Semigroups: ReverseIdentity: usage,\n",
+                  "the second and third arguments must be non-empty lists,");
+  elif Size(lhs) <> 2 or Size(rhs) <> 2 then
+    ErrorNoReturn("Semigroups: ReverseIdentity: usage,\n",
+                  "the second and third arguments must be a lists of size 2,");
+  elif ForAny(lhs, x -> not IsHomogeneousList(x)) and not IsPosInt(lhs[1][1])
+    and not IsPosInt(lhs[2][1]) and ForAny(rhs, x -> not IsHomogeneousList(x)) 
+    and not IsPosInt(rhs[1][1]) and not IsPosInt(rhs[2][1])  then
+
+    ErrorNoReturn("Semigroups: ReverseIdentity: usage,\n",
+                  "the second and third arguments must be lists of lists of ",
+                  "positive integers,");
+  fi;
+
+  if NrLettersIdentity(lhs) >= NrLettersIdentity(rhs) then
+    nr := NrLettersIdentity(lhs);
+  else
+    nr := NrLettersIdentity(rhs);
+  fi;
+  
+  for tup in IteratorOfTuples(S, nr) do
+    valid := true;
+    for id in lhs do 
+      if EvaluateWord(tup, id[1]) <> EvaluateWord(tup, id[2]) then 
+        valid := false;
+        break;
+      fi;
+    od;
+    if valid then 
+      for id in rhs do 
+        if EvaluateWord(tup, id[1]) <> EvaluateWord(tup, id[2]) then 
+          return [tup];
+        fi;
+      od;
+    fi;
+  od;
+  return true;
+end);
+
 InstallMethod(RandomTuple, "for a positive integer",
 [IsPosInt],
 function(n)
